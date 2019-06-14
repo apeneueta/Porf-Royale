@@ -27,6 +27,7 @@
 // Every Porf is required to have exactly 1 box component tagged "MeleeBox"
 //-------------------------------------------------------------------------------------------------
 
+// Collapsed Code
 // Sets default values
 APorfCharacterBase::APorfCharacterBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<UPorfCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -147,91 +148,47 @@ UShapeComponent* APorfCharacterBase::GetMeleeBox(const FName tag)
         return nullptr;
     }
 }
-
-//-------------------------------------------------------------------------------------------------
-// Update for the Porf.
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-    // Check if any of our status effects are over
-    RemoveFinishedStatusEffects();
-    RestoreHealth(DeltaTime);
-    SetRagdollMeshLocation();
-	RestoreMana(DeltaTime);
-	RegenerateStunMeter(DeltaTime);
-}
-
 //-------------------------------------------------------------------------------------------------
 // Restores missing health, but will not exceed max health.
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::RestoreHealth(float DeltaTime)
 {
-    // If we need to restore
-    if (m_restoreHealth)
-    {
-        // Increase health by regen rate
-        m_health += m_healthRegen * DeltaTime;
-        if (m_health >= m_maxHealth)
-        {
-            // If we've reached the max health, we stop restoring
-            m_health = m_maxHealth;
-            m_restoreHealth = false;
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-// Restores missing Mana, but will not exceed max Mana.
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::RestoreMana(float DeltaTime)
-{
-	if (m_delayManaRegen >= 0.0f)
+	// If we need to restore
+	if (m_restoreHealth)
 	{
-		m_delayManaRegen -= (1.0f * DeltaTime);
-	}
-	else
-	{
-		m_delayManaRegen = 0.0f;
-
-		//If we need to restore
-		if (m_restoreMana)
+		// Increase health by regen rate
+		m_health += m_healthRegen * DeltaTime;
+		if (m_health >= m_maxHealth)
 		{
-			//Increase Mana by regen rate
-			m_mana += m_manaRegen * DeltaTime;
-			if (m_mana >= m_maxMana)
-			{
-				//If we've reached the max Man, we stop restoring
-				m_mana = m_maxMana;
-				m_restoreMana = false;
-			}
+			// If we've reached the max health, we stop restoring
+			m_health = m_maxHealth;
+			m_restoreHealth = false;
 		}
 	}
 }
-
 void APorfCharacterBase::SetRagdollMeshLocation()
 {
-    // If we are in a ragdoll state, UE4 will not automatically have mesh follow root component
-    if (m_ragdolled)
-    {
-        // Have mesh follow root component location manually
-        TArray<USkeletalMeshComponent*> pMeshComps;
-        // Get the mesh
-        GetComponents(pMeshComps);
+	// If we are in a ragdoll state, UE4 will not automatically have mesh follow root component
+	if (m_ragdolled)
+	{
+		// Have mesh follow root component location manually
+		TArray<USkeletalMeshComponent*> pMeshComps;
+		// Get the mesh
+		GetComponents(pMeshComps);
 
-        // Get the Capsule Component (which is root component)
-        TArray<UCapsuleComponent*> pCapComps;
-        GetComponents(pCapComps);
+		// Get the Capsule Component (which is root component)
+		TArray<UCapsuleComponent*> pCapComps;
+		GetComponents(pCapComps);
 
-        pMeshComps[0]->SetAllPhysicsLinearVelocity(FVector(0.f, 0.f, 0.f));
-        pMeshComps[0]->SetAllPhysicsAngularVelocityInDegrees(FVector(0.f, 0.f, 0.f));
+		pMeshComps[0]->SetAllPhysicsLinearVelocity(FVector(0.f, 0.f, 0.f));
+		pMeshComps[0]->SetAllPhysicsAngularVelocityInDegrees(FVector(0.f, 0.f, 0.f));
 
-        // We need to teleport the mesh, because it's a "fully simulated" mesh
-        ETeleportType teleType = ETeleportType::TeleportPhysics;
+		// We need to teleport the mesh, because it's a "fully simulated" mesh
+		ETeleportType teleType = ETeleportType::TeleportPhysics;
 
-        // TODO: Get by tag (how many skeletal meshes can an Actor have in Unreal?
-        pMeshComps[0]->SetWorldLocation(pCapComps[0]->GetComponentLocation(), false, nullptr, teleType);
-    }
+		// TODO: Get by tag (how many skeletal meshes can an Actor have in Unreal?
+		pMeshComps[0]->SetWorldLocation(pCapComps[0]->GetComponentLocation(), false, nullptr, teleType);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -246,7 +203,7 @@ void APorfCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 // TEMP 
 void APorfCharacterBase::RestartLevel()
 {
-    UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -254,16 +211,16 @@ void APorfCharacterBase::RestartLevel()
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::Ragdoll()
 {
-    // Make sure we aren't already ragdolled
-    if (!m_ragdolled)
-    {
-        m_ragdolled = true;
+	// Make sure we aren't already ragdolled
+	if (!m_ragdolled)
+	{
+		m_ragdolled = true;
 
-        // ragdoll the Porf
-        TArray<USkeletalMeshComponent*> pMeshComps;
-        GetComponents(pMeshComps);
-        pMeshComps[0]->SetSimulatePhysics(true);
-    }
+		// ragdoll the Porf
+		TArray<USkeletalMeshComponent*> pMeshComps;
+		GetComponents(pMeshComps);
+		pMeshComps[0]->SetSimulatePhysics(true);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -271,21 +228,21 @@ void APorfCharacterBase::Ragdoll()
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::StandUp()
 {
-    if (m_ragdolled)
-    {
-        m_ragdolled = false;
+	if (m_ragdolled)
+	{
+		m_ragdolled = false;
 
-        // Get the mesh component
-        TArray<USkeletalMeshComponent*> pMeshComps;
-        GetComponents(pMeshComps);
+		// Get the mesh component
+		TArray<USkeletalMeshComponent*> pMeshComps;
+		GetComponents(pMeshComps);
 
-        if (pMeshComps[0])
-        {
-            // Turn of ragdoll
-            pMeshComps[0]->SetSimulatePhysics(false);
+		if (pMeshComps[0])
+		{
+			// Turn of ragdoll
+			pMeshComps[0]->SetSimulatePhysics(false);
 
-            // Reattach mesh to capsule(root)
-            const FAttachmentTransformRules attachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepWorld, false);
+			// Reattach mesh to capsule(root)
+			const FAttachmentTransformRules attachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepWorld, false);
 
 			// Get the pivot ponit component based on it's tag (there should only be one of these per actor.
 			TArray<UActorComponent*> pComponents;
@@ -308,12 +265,12 @@ void APorfCharacterBase::StandUp()
 			{
 				UE_LOG(Character, Warning, TEXT("Character doesn't have a pivot point."));
 			}
-        }
-        else
-        {
-            UE_LOG(Character, Error, TEXT("Character doesn't have a mesh component."));
-        }
-    }
+		}
+		else
+		{
+			UE_LOG(Character, Error, TEXT("Character doesn't have a mesh component."));
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -322,11 +279,11 @@ void APorfCharacterBase::StandUp()
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::MoveUpDown(float axisValue)
 {
-    if (!Immobilized())
-    {
-        FVector forwardVec = FVector(axisValue, 0.f, 0.f);
-        Move(forwardVec);
-    }
+	if (!Immobilized())
+	{
+		FVector forwardVec = FVector(axisValue, 0.f, 0.f);
+		Move(forwardVec);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -335,11 +292,11 @@ void APorfCharacterBase::MoveUpDown(float axisValue)
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::MoveLeftRight(float axisValue)
 {
-    if (!Immobilized())
-    {
-        FVector rightVec = FVector(0.f, axisValue, 0.f);
-        Move(rightVec); 
-    }
+	if (!Immobilized())
+	{
+		FVector rightVec = FVector(0.f, axisValue, 0.f);
+		Move(rightVec);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -347,7 +304,7 @@ void APorfCharacterBase::MoveLeftRight(float axisValue)
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::UseClassAbility()
 {
-    CastAbility(m_pClassAbility);
+	CastAbility(m_pClassAbility);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -378,8 +335,179 @@ void APorfCharacterBase::UseDodgeAbility()
 //-------------------------------------------------------------------------------------------------
 void APorfCharacterBase::UsePowerAbility()
 {
-    CastAbility(m_pPowerAbility);
+	CastAbility(m_pPowerAbility);
 }
+//-------------------------------------------------------------------------------------------
+// This stops the ability that's currently being cast.  To interupt an ability use
+// InteruptAbility().
+//      isHoldDown: whether or not we care if it's a hold down ability
+//-------------------------------------------------------------------------------------------
+void APorfCharacterBase::StopAbility(bool isHoldDown)
+{
+	if (m_pCurrAbility)
+	{
+		if (m_pCurrAbility->StopCast(isHoldDown))
+		{
+			UE_LOG(Character, Warning, TEXT("(Stopping) REMOVING current ability."));
+			m_pCurrAbility = nullptr;
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------
+// This interupts the ability that's currently being cast.
+//-------------------------------------------------------------------------------------------
+void APorfCharacterBase::InteruptAbility()
+{
+	if (m_pCurrAbility)
+	{
+		UE_LOG(Character, Warning, TEXT("(Interupting) REMOVING current ability."));
+		m_pCurrAbility->InteruptAbility();
+		m_pCurrAbility = nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------
+// Deals the specified damage to this character
+//      amount: the amount of damage to deal
+//      return: True, if health is equal to or less than 0.  False if it's greater than 0
+//-------------------------------------------------------------------------------------------
+bool APorfCharacterBase::DealDamage(float amount)
+{
+	m_health -= amount;
+
+	if (m_health <= 0.f)
+	{
+		m_health = 0.f;
+		return true;
+	}
+
+	return false;
+}
+//-------------------------------------------------------------------------------------------------
+// This checks all of the Porf's status effects and determines if it's immobilized.  The are many
+// effects which can cause a Porf to be immobilized.  Immobilized essentially means that the Porf
+// won't respond to input from the player.
+//-------------------------------------------------------------------------------------------------
+bool APorfCharacterBase::Immobilized()
+{
+	// It only takes 1 status effect to immobilize a Porf, so once we find 1 we can return
+	for (auto& effect : m_statusEffects)
+	{
+		if (effect->GetType() <= Incapacitated)
+		{
+			return true;
+		}
+	}
+
+	// We aren't immobilized
+	return false;
+}
+//-------------------------------------------------------------------------------------------------
+// This is the callback when the melee box collides with an object.  This will call the appropriate
+// ability's CastHit().
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::OnMeleeHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherActor->GetClass()->IsChildOf(APorfCharacterBase::StaticClass()))
+		&& OverlappedComp->IsActive() && OverlappedComp->ComponentHasTag("HitCheck"))
+	{
+		if (m_pCurrAbility)
+		{
+			m_pCurrAbility->CastHit(Cast<APorfCharacterBase>(OtherActor));
+		}
+	}
+}
+//-------------------------------------------------------------------------------------------------
+// Turn on gravity
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::TurnOnGravity()
+{
+	if (GetCharacterMovement() != nullptr)
+	{
+		UCharacterMovementComponent* pMovement = GetCharacterMovement();
+		pMovement->GravityScale = 1.0f;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+// Turn off gravity
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::TurnOffGravity()
+{
+	if (GetCharacterMovement() != nullptr)
+	{
+		UCharacterMovementComponent* pMovement = GetCharacterMovement();
+		pMovement->GravityScale = 0.0f;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+// Stops the Porf's movement
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::Stop()
+{
+	if (GetCharacterMovement() != nullptr)
+	{
+		UPorfCharacterMovementComponent* pMovement = Cast<UPorfCharacterMovementComponent>(GetCharacterMovement());
+		pMovement->Stop();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+//  Set's the currently ability to null
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::EndAbility()
+{
+	m_pCurrAbility = nullptr;
+}
+
+// Aaron Peneueta
+	// Functions I have created or augmented
+	// For specific diffs I have done see word doc PorfDiffs
+
+//-------------------------------------------------------------------------------------------------
+// Update for the Porf.
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    // Check if any of our status effects are over
+    RemoveFinishedStatusEffects();
+    RestoreHealth(DeltaTime);
+    SetRagdollMeshLocation();
+	RestoreMana(DeltaTime);
+	RegenerateStunMeter(DeltaTime);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Restores missing Mana, but will not exceed max Mana.
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::RestoreMana(float DeltaTime)
+{
+	if (m_delayManaRegen >= 0.0f)
+	{
+		m_delayManaRegen -= (1.0f * DeltaTime);
+	}
+	else
+	{
+		m_delayManaRegen = 0.0f;
+
+		//If we need to restore
+		if (m_restoreMana)
+		{
+			//Increase Mana by regen rate
+			m_mana += m_manaRegen * DeltaTime;
+			if (m_mana >= m_maxMana)
+			{
+				//If we've reached the max Man, we stop restoring
+				m_mana = m_maxMana;
+				m_restoreMana = false;
+			}
+		}
+	}
+}
+
 
 //-------------------------------------------------------------------------------------------
 // This cast the currently selected ability
@@ -450,54 +578,6 @@ void APorfCharacterBase::CastAbility(/*int index*/AAbilityActionChain* pAbility)
 	{
 		UE_LOG(Character, Warning, TEXT("Character Immobilized."));
 	}
-}
-
-//-------------------------------------------------------------------------------------------
-// This stops the ability that's currently being cast.  To interupt an ability use
-// InteruptAbility().
-//      isHoldDown: whether or not we care if it's a hold down ability
-//-------------------------------------------------------------------------------------------
-void APorfCharacterBase::StopAbility(bool isHoldDown)
-{
-    if (m_pCurrAbility)
-    {
-        if (m_pCurrAbility->StopCast(isHoldDown))
-        {
-            UE_LOG(Character, Warning, TEXT("(Stopping) REMOVING current ability."));
-            m_pCurrAbility = nullptr;
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------
-// This interupts the ability that's currently being cast.
-//-------------------------------------------------------------------------------------------
-void APorfCharacterBase::InteruptAbility()
-{
-    if (m_pCurrAbility)
-    {
-        UE_LOG(Character, Warning, TEXT("(Interupting) REMOVING current ability."));
-        m_pCurrAbility->InteruptAbility();
-        m_pCurrAbility = nullptr;
-    }
-}
-
-//-------------------------------------------------------------------------------------------
-// Deals the specified damage to this character
-//      amount: the amount of damage to deal
-//      return: True, if health is equal to or less than 0.  False if it's greater than 0
-//-------------------------------------------------------------------------------------------
-bool APorfCharacterBase::DealDamage(float amount)
-{
-	m_health -= amount;
-
-	if (m_health <= 0.f)
-	{
-		m_health = 0.f;
-		return true;
-	}
-
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -575,26 +655,6 @@ void APorfCharacterBase::Move(FVector& movementVec)
     {
         UE_LOG(Character, Error, TEXT("Character doesn't have a movement component."));
     }
-}
-
-//-------------------------------------------------------------------------------------------------
-// This checks all of the Porf's status effects and determines if it's immobilized.  The are many
-// effects which can cause a Porf to be immobilized.  Immobilized essentially means that the Porf
-// won't respond to input from the player.
-//-------------------------------------------------------------------------------------------------
-bool APorfCharacterBase::Immobilized()
-{
-    // It only takes 1 status effect to immobilize a Porf, so once we find 1 we can return
-    for (auto& effect : m_statusEffects)
-    {
-        if (effect->GetType() <= Incapacitated)
-        {
-            return true;
-        }
-    }
-
-    // We aren't immobilized
-    return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -686,22 +746,6 @@ void APorfCharacterBase::SnapTurn(FVector direction)
 }
 
 //-------------------------------------------------------------------------------------------------
-// This is the callback when the melee box collides with an object.  This will call the appropriate
-// ability's CastHit().
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::OnMeleeHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if ((OtherActor != nullptr) && (OtherActor != this) && (OtherActor->GetClass()->IsChildOf(APorfCharacterBase::StaticClass()))
-        && OverlappedComp->IsActive() && OverlappedComp->ComponentHasTag("HitCheck"))
-    {
-        if (m_pCurrAbility)
-        {
-            m_pCurrAbility->CastHit(Cast<APorfCharacterBase>(OtherActor));
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
 // Inflicts X damage to the Porf.
 //      damage: the amount of damage to do to the player
 //-------------------------------------------------------------------------------------------------
@@ -731,54 +775,48 @@ void APorfCharacterBase::ReceiveDamage(const float damage)
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-// Turn on gravity
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::TurnOnGravity()
-{
-    if (GetCharacterMovement() != nullptr)
-    {
-        UCharacterMovementComponent* pMovement = GetCharacterMovement();
-        pMovement->GravityScale = 1.0f;
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-// Turn off gravity
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::TurnOffGravity()
-{
-    if (GetCharacterMovement() != nullptr)
-    {
-        UCharacterMovementComponent* pMovement = GetCharacterMovement();
-        pMovement->GravityScale = 0.0f;
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-// Stops the Porf's movement
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::Stop()
-{
-    if (GetCharacterMovement() != nullptr)
-    {
-        UPorfCharacterMovementComponent* pMovement = Cast<UPorfCharacterMovementComponent>(GetCharacterMovement());
-        pMovement->Stop();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-//  Set's the currently ability to null
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::EndAbility()
-{
-    m_pCurrAbility = nullptr;
-}
 
 #pragma region StatusEffects
 //-------------------------------------------------------------------------------------------------
 // Status Effect Methods
 //-------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------------
+// Checks for a specific status effect
+//      effect: the status effect to check for
+//-------------------------------------------------------------------------------------------------
+bool APorfCharacterBase::CheckStatusEffect(StatusEffects effect)
+{
+	for (int i{ 0 }; i < m_statusEffects.Num(); ++i)
+	{
+		if (m_statusEffects[i]->GetType() == effect)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+// This loops through all of our status effects and removes them if they are marked finished
+//-------------------------------------------------------------------------------------------------
+void APorfCharacterBase::RemoveFinishedStatusEffects()
+{
+	int i{ 0 };
+	while (i < m_statusEffects.Num())
+	{
+		if (m_statusEffects[i]->IsFinished())
+		{
+			m_statusEffects[i]->Destroy();
+			m_statusEffects.RemoveAt(i);
+			continue;
+		}
+		++i;
+	}
+}
+
+// Collapsed Code
 
 //-------------------------------------------------------------------------------------------------
 // Creates and adds a status effect to the character.
@@ -812,22 +850,7 @@ void APorfCharacterBase::RemoveStatusEffect(StatusEffects toRemove)
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-// Checks for a specific status effect
-//      effect: the status effect to check for
-//-------------------------------------------------------------------------------------------------
-bool APorfCharacterBase::CheckStatusEffect(StatusEffects effect)
-{
-	for (int i{ 0 }; i < m_statusEffects.Num(); ++i)
-	{
-		if (m_statusEffects[i]->GetType() == effect)
-		{
-			return true;
-		}
-	}
 
-	return false;
-}
 
 //-------------------------------------------------------------------------------------------------
 //  This creates a status effect in the world.  This does NOT add it to the character.
@@ -866,21 +889,5 @@ int APorfCharacterBase::CreateStatusEffect()
     return ID;
 }
 
-//-------------------------------------------------------------------------------------------------
-// This loops through all of our status effects and removes them if they are marked finished
-//-------------------------------------------------------------------------------------------------
-void APorfCharacterBase::RemoveFinishedStatusEffects()
-{
-    int i{ 0 };
-    while (i < m_statusEffects.Num())
-    {
-        if (m_statusEffects[i]->IsFinished())
-        {
-			m_statusEffects[i]->Destroy();
-            m_statusEffects.RemoveAt(i);
-            continue;
-        }
-        ++i;
-    }
-}
+
 #pragma endregion

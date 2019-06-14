@@ -10,6 +10,7 @@
 class AAbilityActionChain;
 class UBoxComponent;
 
+// Collapsed code
 UENUM(BlueprintType)
 enum ActionState
 {
@@ -51,6 +52,42 @@ class PORFROYALE_API APorfCharacterBase : public ACharacter
 	GENERATED_BODY()
 
 public:
+
+	// Aaron Peneueta
+	// Functions I have created or augmented
+	// For specific diffs I have done see word doc PorfDiffs
+
+	/** This will set the characters movement speed*/
+	UFUNCTION(BlueprintCallable)
+		void SetMovementSpeed(float movementSpeed);
+
+	/** This will set the characters rotation variables speed and lerp ratio*/
+	UFUNCTION(BlueprintCallable)
+		void SetRotationVariables(float rotSpeed, float lerpRatio);
+
+	/** This will set the characters push speed*/
+	UFUNCTION(BlueprintCallable)
+		void SetPushSpeed(float pushSpeed);
+
+	UFUNCTION(BlueprintCallable)
+		float GetPushSpeed();
+
+	/** This will increase the specified amount for the character's stun meter.  Returns true, if stun meter is at the max.  False, if it's less than the max.*/
+	UFUNCTION(BlueprintCallable)
+		bool IncreaseStunMeter(float amount);
+
+	/** This function will decrease the character's stun meter by the amount that is set in the variable m_stunMeterRegen*/
+	UFUNCTION(BlueprintCallable)
+		void RegenerateStunMeter(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable)
+		void SnapTurn(FVector direction);
+
+	/** Searches for status effect*/
+	UFUNCTION(BlueprintCallable)
+		bool CheckStatusEffect(StatusEffects effect);
+
+	// Collapesed code
 	APorfCharacterBase(const FObjectInitializer& ObjectInitializer);
 
     // Initialization
@@ -110,20 +147,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void Push(FVector direction, float distance, float speed);
 
-	/** This will set the characters push speed*/
-	UFUNCTION(BlueprintCallable)
-		void SetPushSpeed(float pushSpeed);
+	
 
+	/** This will stop the current ability being cast.  True, if you care if it's a hold button down ability.  False, will always end the ability. */
 	UFUNCTION(BlueprintCallable)
-		float GetPushSpeed();
+		void StopAbility(bool isHoldDown);
 
-	/** This will set the characters movement speed*/
+	/** This will interupt whichever ability this character is casting.  */
 	UFUNCTION(BlueprintCallable)
-		void SetMovementSpeed(float movementSpeed);
+		void InteruptAbility();
 
-	/** This will set the characters rotation variables speed and lerp ratio*/
+	/** This will drain the specified amount from the character's mana.  Returns true, if mana is at 0.  False, if it's greater than 0.*/
 	UFUNCTION(BlueprintCallable)
-		void SetRotationVariables(float rotSpeed, float lerpRatio);
+		bool DrainMana(float amount);
 
     // TODO: bring SetSimulatePhysics to true out of blueprint and into function, think about deleting this function
     /** This ragdolls the character*/
@@ -149,29 +185,13 @@ public:
     UFUNCTION(BlueprintCallable)
         void RestartLevel();
 
-    /** This will stop the current ability being cast.  True, if you care if it's a hold button down ability.  False, will always end the ability. */
-    UFUNCTION(BlueprintCallable)
-        void StopAbility(bool isHoldDown);
-
-    /** This will interupt whichever ability this character is casting.  */
-    UFUNCTION(BlueprintCallable)
-        void InteruptAbility();
+    
 		
 	/** This deals damage to the character.  Returns true, if health is less than or equal to 0.  False, if it's greater than 0.*/
 	UFUNCTION(BlueprintCallable)
 		bool DealDamage(float amount);
 
-	/** This will drain the specified amount from the character's mana.  Returns true, if mana is at 0.  False, if it's greater than 0.*/
-	UFUNCTION(BlueprintCallable)
-		bool DrainMana(float amount);
-
-	/** This will increase the specified amount for the character's stun meter.  Returns true, if stun meter is at the max.  False, if it's less than the max.*/
-	UFUNCTION(BlueprintCallable)
-		bool IncreaseStunMeter(float amount);
-
-	/** This function will decrease the character's stun meter by the amount that is set in the variable m_stunMeterRegen*/
-	UFUNCTION(BlueprintCallable)
-		void RegenerateStunMeter(float DeltaTime);
+	
 
     /** This will add a status effect to the Porf for the specified duration. */
     UFUNCTION(BlueprintCallable)
@@ -181,9 +201,7 @@ public:
     UFUNCTION(BlueprintCallable)
         void RemoveStatusEffect(StatusEffects toRemove);
 
-	/** Searches for status effect*/
-	UFUNCTION(BlueprintCallable)
-		bool CheckStatusEffect(StatusEffects effect);
+	
 
     /** This sets the characters action state*/
 	UFUNCTION(BlueprintCallable)
@@ -200,8 +218,7 @@ public:
     UFUNCTION()
         void OnMeleeHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintCallable)
-		void SnapTurn(FVector direction);
+	
 
     // Input
     UFUNCTION(BlueprintCallable)
@@ -240,6 +257,32 @@ private:
     void CastAbility(AAbilityActionChain * pAbility);
 
 protected:
+
+	// Aaron Peneueta
+	// Functions I have created or augmented
+	// For specific diffs I have done see word doc PorfDiffs
+
+	/** How long before character mana meter starts regenerating*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
+		float m_manaMeterDelay = 2.f;
+	/** The maximum Stun Meter of the character*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
+		float m_maxStunMeter = 100.f;
+	/** The current level of the stun meter of the character*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
+		float m_stunMeter = 0.f;
+	/** The regeneration rate of the stun meter of the character*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
+		float m_stunMeterRegen = 5.f;
+	/** How long before character stun meter starts lowering*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
+		float m_stunMeterDelay = 2.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
+		bool m_abilityHeldDown = false;
+
+	// Collapsed code
+
+
     // TODO: move this into an array of abilities
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
         AAbilityActionChain* m_pClassAbility;
@@ -259,9 +302,11 @@ protected:
     /** The maximum health of the character*/
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
         float m_maxHealth = 100.f;
-    /** The health regeneration rate of the character*/
-    UPROPERTY(Editanywhere, BlueprintReadWrite, Category = "Tunable Values")
-        float m_healthRegen = 5.f;
+   
+	/** The health regeneration rate of the character*/
+	UPROPERTY(Editanywhere, BlueprintReadWrite, Category = "Tunable Values")
+		float m_healthRegen = 5.f;
+
     /** The current health of the player*/
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
         float m_health;
@@ -278,27 +323,13 @@ protected:
     /** The current mana of the character*/
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
         float m_mana;
-	/** How long before character mana meter starts regenerating*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
-		float m_manaMeterDelay = 2.f;
+	
 
     /** How long the character will be stunned for once his break meter is depleted*/
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
         float m_breakMeterStunDuration = 2.0f;
 
 
-	/** The maximum Stun Meter of the character*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
-		float m_maxStunMeter = 100.f;
-	/** The current level of the stun meter of the character*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
-		float m_stunMeter = 0.f;
-	/** The regeneration rate of the stun meter of the character*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
-		float m_stunMeterRegen = 5.f;
-	/** How long before character stun meter starts lowering*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
-		float m_stunMeterDelay = 2.f;
 
     // TODO: Think about deleting this
     /** Whether or not this character is currently ragdolled*/
@@ -309,14 +340,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
 		TArray<FName> m_hitBoxTags;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
-		bool m_abilityHeldDown = false;
+	
 
 private:
+
+	// Aaron Peneueta
+	// Functions I have created or augmented
+	// For specific diffs I have done see word doc PorfDiffs
+
+	float m_delayManaRegen = 0.0f;
+	float m_delayStunMeterRegen = 0.0f;
+
+	// Collapsed code
     TArray<AEffect*> m_statusEffects;
     ActionState m_state{ Idle };
     bool m_restoreHealth{ false };
 	bool m_restoreMana{ false };
-	float m_delayManaRegen = 0.0f;
-	float m_delayStunMeterRegen = 0.0f;
+	
 };

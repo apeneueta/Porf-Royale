@@ -16,6 +16,8 @@ class PORFROYALE_API AAbilityActionChain : public AActor
 	GENERATED_BODY()
 	
 public:	
+
+	// Collapsed Code
 	AAbilityActionChain();
 
 	virtual void Tick(float DeltaTime) override;
@@ -73,20 +75,14 @@ public:
     bool OnCooldown() { return m_remainingCooldown > 0.f; }
 
 protected:
-	virtual void BeginPlay() override;
 
-    /** Stuns the opponent*/
-    UFUNCTION(BlueprintCallable)
-        bool StunAction(const float stunDuration);
-    /** Grabs the opponent*/
-    UFUNCTION(BlueprintCallable)
-        bool GrabAction();
-    /** Releases the opponent (stop grabbing the opponent)*/
-    UFUNCTION(BlueprintCallable)
-        bool ReleaseAction();
-    /** Pushes the opponent a specified distance and speed*/
-    UFUNCTION(BlueprintCallable)
-        bool PushAction(const float distance, float speed);
+	// Aaron Peneueta
+	// Functions I have created or augmented
+	// For specific diffs I have done see word doc PorfDiffs
+
+	/** Pushes the opponent a specified distance and speed*/
+	UFUNCTION(BlueprintCallable)
+		bool PushAction(const float distance, float speed);
 
 	/** Pulls the opponent a specified distance and speed*/
 	UFUNCTION(BlueprintCallable)
@@ -105,15 +101,30 @@ protected:
 	/** sets the Rotation speed and lerpRatio*/
 	UFUNCTION(BlueprintCallable)
 		bool RotationAction(const float rotSpeed, const float lerpRatio);
+	/** Moves the character casting this ability a specified distance*/
+	UFUNCTION(BlueprintCallable)
+		bool ChargeAction(const float distance, float speed);
+
+	// Collapsed Code
+	virtual void BeginPlay() override;
+
+    /** Stuns the opponent*/
+    UFUNCTION(BlueprintCallable)
+        bool StunAction(const float stunDuration);
+    /** Grabs the opponent*/
+    UFUNCTION(BlueprintCallable)
+        bool GrabAction();
+    /** Releases the opponent (stop grabbing the opponent)*/
+    UFUNCTION(BlueprintCallable)
+        bool ReleaseAction();
+   
     /** Activates the melee box for a specified duration.  If -1, for the character casting this ability*/
     UFUNCTION(BlueprintCallable)
         bool MeleeAction(const float duration, const FName hitBox);
     /** Deactivates the melee box of the character casting this ability*/
     UFUNCTION(BlueprintCallable)
         void DeactivateMeleeAction();
-    /** Moves the character casting this ability a specified distance*/
-    UFUNCTION(BlueprintCallable)
-        bool ChargeAction(const float distance, float speed);
+    
     /** Deals damage to the opponent*/
     UFUNCTION(BlueprintCallable)
         bool DealDamageAction(const float damage);
@@ -131,10 +142,12 @@ protected:
         void EndAbilityNoHit();
 
 private:
+	// Collapsed Code
     void StartMeleeTimer(const float time);
     void StartCooldown() { m_remainingCooldown = m_cooldownLength; }
 
 protected:
+	// Collapsed Code
     /** The character who owns this ability*/
     UPROPERTY(BlueprintReadWrite)
         APorfCharacterBase* m_pAbilityOwner;
@@ -168,6 +181,7 @@ protected:
         float m_remainingCooldown = 0.f;
 
 private:
+	// Collapsed Code
     FTimerHandle m_abilityDurationHandle;
     FTimerHandle m_meleeDurationHandle;
 

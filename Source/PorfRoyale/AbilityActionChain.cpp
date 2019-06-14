@@ -26,6 +26,205 @@
 //      OnEnd(): this is called when the duration of the ability ends.
 //-------------------------------------------------------------------------------------------
 
+
+// Aaron Peneueta
+// Functions I created or Augmented
+// For Specific diffs see word doc PorfDiffs
+
+//-------------------------------------------------------------------------------------------------
+// When the ability ends we need to deactivate melee box and state we are no longer casting.
+//-------------------------------------------------------------------------------------------------
+void AAbilityActionChain::OnAbilityEnd()
+{
+	UE_LOG(Ability, Warning, TEXT("Ending ability."));
+	DeactivateMeleeAction();
+
+	// If we have a target porf we need to release it and then clear it
+	if (m_pPorfHit)
+	{
+		ReleaseAction();
+		m_pPorfHit = nullptr;
+	}
+
+	// Work around for the bug where block is never cleared
+	// TODO: Find a better way
+	if (m_pAbilityOwner->CheckStatusEffect(StatusEffects::Incapacitated) && m_pAbilityOwner->CheckStatusEffect(StatusEffects::Invulnerable))
+	{
+		m_pAbilityOwner->StopAbility(true);
+	}
+
+	m_casting = false;
+	m_pAbilityOwner->EndAbility();
+	m_pAbilityOwner->SetActionState(Idle);
+}
+//-------------------------------------------------------------------------------------------------
+//		Pushes the opponent away from the ability owner.
+//      distance: the distance to push the opponent\
+//		speed: The speed to pull the opponent
+//      return: whether or not we successfully pushed the opponent
+//-------------------------------------------------------------------------------------------------
+bool AAbilityActionChain::PushAction(const float distance, float speed)
+{
+	// we have a target
+	if (m_pPorfHit != nullptr)
+	{
+		// get the ability owner's rotation
+		FRotator actorRot = m_pAbilityOwner->GetActorRotation();
+
+		// determine direction to apply force
+		//FVector actorVec = actorRot.Vector() * force;
+		FVector actorVec = actorRot.Vector();
+		actorVec.Normalize();
+
+		// push the target along ability owners forward vector
+		m_pPorfHit->Push(actorVec, distance, speed);
+		return true;
+	}
+	else
+	{
+		// no target to push
+		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
+		return false;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+//  Pulls the opponent towards the ability owner.
+//      distance: the distance to pull the opponent
+//		speed: The speed to pull the opponent
+//      return: whether or not we successfully pulled the opponent
+//-------------------------------------------------------------------------------------------------
+bool AAbilityActionChain::PullAction(const float distance, float speed)
+{
+	// we have a target
+	if (m_pPorfHit != nullptr)
+	{
+		// get the ability owners rotation
+		FRotator actorRot = m_pAbilityOwner->GetActorRotation();
+
+		// determine direction to apply force
+		//FVector actorVec = actorRot.Vector() * force;
+		FVector actorVec = actorRot.Vector();
+		actorVec.Normalize();
+
+		// pull the target toward the ability owner
+		m_pPorfHit->Push(-actorVec, FMath::Abs(distance), speed);
+		return true;
+	}
+	else
+	{
+		// no target to pull
+		UE_LOG(Ability, Warning, TEXT("Attempting to pull with no target."));
+		return false;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+//		Pushes the opponent away from its forward vector.
+//      distance: the distance to push the opponent\
+//		speed: The speed to pull the opponent
+//      return: whether or not we successfully pushed the opponent
+//-------------------------------------------------------------------------------------------------
+bool AAbilityActionChain::BackupAction(const float distance, float speed)
+{
+	// we have a target
+	if (m_pPorfHit != nullptr)
+	{
+		// get the opponents rotation
+		FRotator actorRot = m_pPorfHit->GetActorRotation();
+
+		// determine direction to apply force
+		//FVector actorVec = actorRot.Vector() * force;
+		FVector actorVec = actorRot.Vector();
+		actorVec.Normalize();
+
+		// push the target along ability owners forward vector
+		m_pPorfHit->Push(-actorVec, distance, speed);
+		return true;
+	}
+	else
+	{
+		// no target to push
+		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
+		return false;
+	}
+}
+
+bool AAbilityActionChain::PushSpeedAction(const float pushSpeed)
+{
+	// we have a target
+	if (m_pPorfHit != nullptr)
+	{
+		m_pPorfHit->SetPushSpeed(pushSpeed);
+		return true;
+	}
+	else
+	{
+		// no target to push
+		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
+		return false;
+	}
+}
+
+bool AAbilityActionChain::MovementSpeedAction(const float movementSpeed)
+{
+	// we have a target
+	if (m_pPorfHit != nullptr)
+	{
+		m_pPorfHit->SetMovementSpeed(movementSpeed);
+		return true;
+	}
+	else
+	{
+		// no target to push
+		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
+		return false;
+	}
+}
+
+bool AAbilityActionChain::RotationAction(const float rotSpeed, const float lerpRatio)
+{
+	// we have a target
+	if (m_pAbilityOwner != nullptr)
+	{
+		m_pAbilityOwner->SetRotationVariables(rotSpeed, lerpRatio);
+		return true;
+	}
+	else
+	{
+		// no owner of ability
+		UE_LOG(Ability, Warning, TEXT("Attempting to change rotation with no target."));
+		return false;
+	}
+}
+//-------------------------------------------------------------------------------------------------
+// This action applies a force to this porf in the direction he's facing.
+//      force: the force to apply
+//      return: whether or not we successfully charged
+//-------------------------------------------------------------------------------------------------
+bool AAbilityActionChain::ChargeAction(const float distance, float speed)
+{
+	// we should always have an owner
+	if (m_pAbilityOwner)
+	{
+		// get the direction to apply force
+	   // FVector chargeForce = m_pAbilityOwner->GetActorForwardVector() * force;
+		FVector chargeForce = m_pAbilityOwner->GetActorForwardVector();
+		chargeForce.Normalize();
+
+		// apply force
+		Cast<APorfCharacterBase>(m_pAbilityOwner)->Push(chargeForce, distance, speed);
+		return true;
+	}
+	else
+	{
+		// this ability doesn't have an owner
+		UE_LOG(Ability, Error, TEXT("Attempting to call charge action, but no owning Porf."));
+		return false;
+	}
+}
+
+// Collapsed Code
 //-------------------------------------------------------------------------------------------
 // TODO: Need to think about setting bCanEverTick to false.  First need to figure out why character
 // no longer moves.
@@ -96,32 +295,7 @@ void AAbilityActionChain::BeginCast()
     OnCast();
 }
 
-//-------------------------------------------------------------------------------------------------
-// When the ability ends we need to deactivate melee box and state we are no longer casting.
-//-------------------------------------------------------------------------------------------------
-void AAbilityActionChain::OnAbilityEnd()
-{
-    UE_LOG(Ability, Warning, TEXT("Ending ability."));
-	DeactivateMeleeAction();
 
-    // If we have a target porf we need to release it and then clear it
-    if (m_pPorfHit)
-    {
-        ReleaseAction();
-        m_pPorfHit = nullptr;
-    }
-
-	// Work around for the bug where block is never cleared
-	// TODO: Find a better way
-	if (m_pAbilityOwner->CheckStatusEffect(StatusEffects::Incapacitated) && m_pAbilityOwner->CheckStatusEffect(StatusEffects::Invulnerable))
-	{
-		m_pAbilityOwner->StopAbility(true);
-	}
-
-    m_casting = false;
-    m_pAbilityOwner->EndAbility();
-    m_pAbilityOwner->SetActionState(Idle);
-}
 
 //-------------------------------------------------------------------------------------------------
 // This Starts the ability timer.  This is how long before the ability ends.
@@ -290,146 +464,7 @@ bool AAbilityActionChain::ReleaseAction()
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-//		Pushes the opponent away from the ability owner.
-//      distance: the distance to push the opponent\
-//		speed: The speed to pull the opponent
-//      return: whether or not we successfully pushed the opponent
-//-------------------------------------------------------------------------------------------------
-bool AAbilityActionChain::PushAction(const float distance, float speed)
-{
-    // we have a target
-    if (m_pPorfHit != nullptr)
-    {
-        // get the ability owner's rotation
-        FRotator actorRot = m_pAbilityOwner->GetActorRotation();
 
-        // determine direction to apply force
-        //FVector actorVec = actorRot.Vector() * force;
-        FVector actorVec = actorRot.Vector();
-        actorVec.Normalize();
-		
-        // push the target along ability owners forward vector
-        m_pPorfHit->Push(actorVec, distance, speed);
-        return true;
-    }
-    else
-    {
-        // no target to push
-        UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
-        return false;
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-//  Pulls the opponent towards the ability owner.
-//      distance: the distance to pull the opponent
-//		speed: The speed to pull the opponent
-//      return: whether or not we successfully pulled the opponent
-//-------------------------------------------------------------------------------------------------
-bool AAbilityActionChain::PullAction(const float distance, float speed)
-{
-	// we have a target
-	if (m_pPorfHit != nullptr)
-	{
-		// get the ability owners rotation
-		FRotator actorRot = m_pAbilityOwner->GetActorRotation();
-
-		// determine direction to apply force
-		//FVector actorVec = actorRot.Vector() * force;
-		FVector actorVec = actorRot.Vector();
-		actorVec.Normalize();
-
-		// pull the target toward the ability owner
-		m_pPorfHit->Push(-actorVec, FMath::Abs(distance), speed);
-		return true;
-	}
-	else
-	{
-		// no target to pull
-		UE_LOG(Ability, Warning, TEXT("Attempting to pull with no target."));
-		return false;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------
-//		Pushes the opponent away from its forward vector.
-//      distance: the distance to push the opponent\
-//		speed: The speed to pull the opponent
-//      return: whether or not we successfully pushed the opponent
-//-------------------------------------------------------------------------------------------------
-bool AAbilityActionChain::BackupAction(const float distance, float speed)
-{
-	// we have a target
-	if (m_pPorfHit != nullptr)
-	{
-		// get the opponents rotation
-		FRotator actorRot = m_pPorfHit->GetActorRotation();
-
-		// determine direction to apply force
-		//FVector actorVec = actorRot.Vector() * force;
-		FVector actorVec = actorRot.Vector();
-		actorVec.Normalize();
-
-		// push the target along ability owners forward vector
-		m_pPorfHit->Push(-actorVec, distance, speed);
-		return true;
-	}
-	else
-	{
-		// no target to push
-		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
-		return false;
-	}
-}
-
-bool AAbilityActionChain::PushSpeedAction(const float pushSpeed)
-{
-	// we have a target
-	if (m_pPorfHit != nullptr)
-	{
-		m_pPorfHit->SetPushSpeed(pushSpeed);
-		return true;
-	}
-	else
-	{
-		// no target to push
-		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
-		return false;
-	}
-}
-
-bool AAbilityActionChain::MovementSpeedAction(const float movementSpeed)
-{
-	// we have a target
-	if (m_pPorfHit != nullptr)
-	{
-		m_pPorfHit->SetMovementSpeed(movementSpeed);
-		return true;
-	}
-	else
-	{
-		// no target to push
-		UE_LOG(Ability, Warning, TEXT("Attempting to push with no target."));
-		return false;
-	}
-}
-
-bool AAbilityActionChain::RotationAction(const float rotSpeed, const float lerpRatio)
-{
-	// we have a target
-	if (m_pAbilityOwner != nullptr)
-	{
-		m_pAbilityOwner->SetRotationVariables(rotSpeed, lerpRatio);
-		return true;
-	}
-	else
-	{
-		// no owner of ability
-		UE_LOG(Ability, Warning, TEXT("Attempting to change rotation with no target."));
-		return false;
-	}
-}
 
 //-------------------------------------------------------------------------------------------------
 //  Every porf is required to have a hitbox in front of them.  This activates that hitbox.
@@ -501,32 +536,7 @@ bool AAbilityActionChain::MeleeAction(const float duration, const FName hitBox)
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-// This action applies a force to this porf in the direction he's facing.
-//      force: the force to apply
-//      return: whether or not we successfully charged
-//-------------------------------------------------------------------------------------------------
-bool AAbilityActionChain::ChargeAction(const float distance, float speed)
-{
-    // we should always have an owner
-    if (m_pAbilityOwner)
-    {
-        // get the direction to apply force
-       // FVector chargeForce = m_pAbilityOwner->GetActorForwardVector() * force;
-        FVector chargeForce = m_pAbilityOwner->GetActorForwardVector();
-        chargeForce.Normalize();
 
-        // apply force
-        Cast<APorfCharacterBase>(m_pAbilityOwner)->Push(chargeForce, distance, speed);
-        return true;
-    }
-    else
-    {
-        // this ability doesn't have an owner
-        UE_LOG(Ability, Error, TEXT("Attempting to call charge action, but no owning Porf."));
-        return false;
-    }
-}
 
 //-------------------------------------------------------------------------------------------------
 // This action deals a specified damage to the opponent.

@@ -14,6 +14,11 @@
 //  subsequent push.
 //-------------------------------------------------------------------------------------------------
 
+// Aaron Peneueta
+// Functions I have created or augment
+// For specific diffs I have done see word doc PorfDiffs
+
+
 //-------------------------------------------------------------------------------------------------
 //  This will calculate movement for the character this frame and move the character.
 //-------------------------------------------------------------------------------------------------
@@ -240,6 +245,20 @@ const FVector UPorfCharacterMovementComponent::CalculateForces(float DeltaTime)
 	return forceToAdd;
 }
 
+
+//-------------------------------------------------------------------------------------------------
+//  Sets the speed of character rotation and the lerp ratio for rotation
+//-------------------------------------------------------------------------------------------------
+void UPorfCharacterMovementComponent::SetRotationSpeedAndLerpRatio(float rotSpeed, float lerpRatio)
+{
+	m_rotationSpeed = rotSpeed;
+
+	FMath::Clamp(lerpRatio, 0.0f, 1.0f);
+
+	m_lerpRatio = lerpRatio;
+}
+
+// Collapsed Code
 //-------------------------------------------------------------------------------------------------
 //  This is our custom check to see if a value is close to zero.  This will set the value
 //  to zero if it's within the tunable range to zero (negative or positive).
@@ -255,19 +274,6 @@ void UPorfCharacterMovementComponent::CloseToZero(float& toCheck, float howClose
 		toCheck = 0.f;
 	}
 }
-
-//-------------------------------------------------------------------------------------------------
-//  Sets the speed of character rotation and the lerp ratio for rotation
-//-------------------------------------------------------------------------------------------------
-void UPorfCharacterMovementComponent::SetRotationSpeedAndLerpRatio(float rotSpeed, float lerpRatio)
-{
-	m_rotationSpeed = rotSpeed;
-
-	FMath::Clamp(lerpRatio, 0.0f, 1.0f);
-
-	m_lerpRatio = lerpRatio;
-}
-
 //-------------------------------------------------------------------------------------------------
 //  This will shop the character's movement
 //-------------------------------------------------------------------------------------------------
