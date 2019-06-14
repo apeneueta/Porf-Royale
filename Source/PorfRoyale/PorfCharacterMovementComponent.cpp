@@ -257,8 +257,8 @@ void UPorfCharacterMovementComponent::SetRotationSpeedAndLerpRatio(float rotSpee
 
 	m_lerpRatio = lerpRatio;
 }
+// End Section Aaron Peneueta
 
-// Collapsed Code
 //-------------------------------------------------------------------------------------------------
 //  This is our custom check to see if a value is close to zero.  This will set the value
 //  to zero if it's within the tunable range to zero (negative or positive).

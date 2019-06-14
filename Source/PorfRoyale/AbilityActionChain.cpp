@@ -223,8 +223,10 @@ bool AAbilityActionChain::ChargeAction(const float distance, float speed)
 		return false;
 	}
 }
+// End Section Aaron Peneueta
 
-// Collapsed Code
+
+
 //-------------------------------------------------------------------------------------------
 // TODO: Need to think about setting bCanEverTick to false.  First need to figure out why character
 // no longer moves.

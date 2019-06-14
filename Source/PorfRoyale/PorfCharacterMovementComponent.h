@@ -9,15 +9,15 @@
 UCLASS()
 class PORFROYALE_API UPorfCharacterMovementComponent : public UCharacterMovementComponent
 {
-	// Collapsed Code
+
 	GENERATED_BODY()
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 public:
-	// Aaron Peneueta
-    // Functions I have created or augmented
-    // For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 	void SetPushSpeed(float pushSpeed) { m_pushSpeed = pushSpeed; }
 	float GetPushSpeed() { return m_pushSpeed; }
@@ -25,7 +25,9 @@ public:
 	void SetRotationSpeedAndLerpRatio(float rotSpeed, float lerpRatio);
 	void Snap(FVector direction);
 
-	// Collapsed Code
+// End Section Aaron Peneueta
+
+
     /** Returns true if the character is walking.  False, otherwise. */
 	UFUNCTION(BlueprintCallable)
 		bool IsWalking() { return m_isWalking; }
@@ -37,9 +39,9 @@ public:
 	
 
 protected:
-	// Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 	/** The maximum speed value that a character can move. */
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Tunable Values")
@@ -55,8 +57,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values", meta = (ClampMin = "0.0", ClampMax = "1.0"))
 		float m_pushSpeedDropRatio = 0.75f;
 
+// End Section Aaron Peneueta
 
-	// Collapsed Code
 	/** The movement speed of the character. */
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Tunable Values")
 		float m_movementSpeed = 200.f;
@@ -77,21 +79,21 @@ protected:
 	
 
 private:
-	// Collapsed Code
+
 	void CalculateRotation(float DeltaTime);
 	const FVector CalculateForces(float DeltaTime);
 	void CloseToZero(float& toCheck, float howClose);
 
 private:
-	// Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 	float m_currentPushSpeed = 0.f;
 	float m_pointToLowerSpeed = 0.f;
 	float m_quadraticA = 0.f;
 	bool m_calculatePush = false;
-
-	// Collapsed Code
+// End Section Aaron Peneueta
+	
     FVector m_movementThisFrame = FVector(0.f, 0.f, 0.f);
     FVector m_pushDirection = FVector(0.f, 0.f, 0.f);
     float m_distanceTraveled = 0.f;

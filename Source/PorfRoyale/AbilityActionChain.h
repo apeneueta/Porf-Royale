@@ -17,7 +17,6 @@ class PORFROYALE_API AAbilityActionChain : public AActor
 	
 public:	
 
-	// Collapsed Code
 	AAbilityActionChain();
 
 	virtual void Tick(float DeltaTime) override;
@@ -76,9 +75,9 @@ public:
 
 protected:
 
-	// Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 	/** Pushes the opponent a specified distance and speed*/
 	UFUNCTION(BlueprintCallable)
@@ -104,8 +103,8 @@ protected:
 	/** Moves the character casting this ability a specified distance*/
 	UFUNCTION(BlueprintCallable)
 		bool ChargeAction(const float distance, float speed);
-
-	// Collapsed Code
+// End Section Aaron Peneueta
+	
 	virtual void BeginPlay() override;
 
     /** Stuns the opponent*/
@@ -142,12 +141,12 @@ protected:
         void EndAbilityNoHit();
 
 private:
-	// Collapsed Code
+	
     void StartMeleeTimer(const float time);
     void StartCooldown() { m_remainingCooldown = m_cooldownLength; }
 
 protected:
-	// Collapsed Code
+	
     /** The character who owns this ability*/
     UPROPERTY(BlueprintReadWrite)
         APorfCharacterBase* m_pAbilityOwner;
@@ -181,7 +180,7 @@ protected:
         float m_remainingCooldown = 0.f;
 
 private:
-	// Collapsed Code
+	
     FTimerHandle m_abilityDurationHandle;
     FTimerHandle m_meleeDurationHandle;
 

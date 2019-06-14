@@ -10,7 +10,7 @@
 class AAbilityActionChain;
 class UBoxComponent;
 
-// Collapsed code
+
 UENUM(BlueprintType)
 enum ActionState
 {
@@ -53,9 +53,9 @@ class PORFROYALE_API APorfCharacterBase : public ACharacter
 
 public:
 
-	// Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 	/** This will set the characters movement speed*/
 	UFUNCTION(BlueprintCallable)
@@ -86,8 +86,8 @@ public:
 	/** Searches for status effect*/
 	UFUNCTION(BlueprintCallable)
 		bool CheckStatusEffect(StatusEffects effect);
-
-	// Collapesed code
+// End Section Aaron Peneueta
+	
 	APorfCharacterBase(const FObjectInitializer& ObjectInitializer);
 
     // Initialization
@@ -258,9 +258,9 @@ private:
 
 protected:
 
-	// Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 	/** How long before character mana meter starts regenerating*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
@@ -279,8 +279,8 @@ protected:
 		float m_stunMeterDelay = 2.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tunable Values")
 		bool m_abilityHeldDown = false;
+// End Section Aaron Peneueta
 
-	// Collapsed code
 
 
     // TODO: move this into an array of abilities
@@ -344,14 +344,14 @@ protected:
 
 private:
 
-	// Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Aaron Peneueta
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 	float m_delayManaRegen = 0.0f;
 	float m_delayStunMeterRegen = 0.0f;
+// End Section Aaron Peneueta
 
-	// Collapsed code
     TArray<AEffect*> m_statusEffects;
     ActionState m_state{ Idle };
     bool m_restoreHealth{ false };

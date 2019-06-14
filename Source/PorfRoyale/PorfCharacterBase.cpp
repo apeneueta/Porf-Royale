@@ -27,7 +27,7 @@
 // Every Porf is required to have exactly 1 box component tagged "MeleeBox"
 //-------------------------------------------------------------------------------------------------
 
-// Collapsed Code
+
 // Sets default values
 APorfCharacterBase::APorfCharacterBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<UPorfCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -463,8 +463,8 @@ void APorfCharacterBase::EndAbility()
 }
 
 // Aaron Peneueta
-	// Functions I have created or augmented
-	// For specific diffs I have done see word doc PorfDiffs
+// Functions I have created or augmented
+// For specific diffs I have done see word doc PorfDiffs
 
 //-------------------------------------------------------------------------------------------------
 // Update for the Porf.
@@ -815,8 +815,8 @@ void APorfCharacterBase::RemoveFinishedStatusEffects()
 		++i;
 	}
 }
+// End Section Aaron Peneueta
 
-// Collapsed Code
 
 //-------------------------------------------------------------------------------------------------
 // Creates and adds a status effect to the character.
