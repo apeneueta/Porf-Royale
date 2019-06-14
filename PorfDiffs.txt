@@ -1,0 +1,154 @@
+File Diffs
+
+AbilityActionChain.h
+	- Function modified
+		o PushAction
+		o ChargeAction
+	- Functions added
+		o PullAction
+		o BackupAction
+		o PushSpeedAction
+		o MovementSpeedAction
+		o RotationAction
+
+AbilityActionChain.cpp
+	- OnAbilityEnd
+		o Bug fix for when block is never cleared
+	- PushAction
+		o Added float speed
+		o Adjusted function calls to account for new variable
+	- PullAction
+		o Input float distance and float speed
+		o Return bool
+		o Takes ability owners forward vector and pulls the porf hit toward ability owner
+	- BackupAction
+		o Input float distance and float speed
+		o Return bool
+		o Gets porf hit forward vector and pushes character away from that vector
+	- PushSpeedAction
+		o Input float pushSpeed
+		o Return bool
+		o Sets the porf hit push speed
+		o Consider removing
+	- MovementSpeedAction
+		o Input float movementSpeed
+		o Return bool
+		o Sets the porf hit movement speed
+	- RotationAction
+		o Float rotSpeed and float lerpRatio
+		o Return bool
+		o Sets the ability owners rot speed and lerpRatio
+	- ChargeAction
+		o Added float speed
+		o Adjusted function calls to accept speed variable
+
+PorfCharacterBase.h
+	- Push
+		o Added float speed parameter
+	- Functions added
+		o SetPushSpeed
+		o GetPushSpeed
+		o SetMovementSpeed
+		o SetRotationVariables
+		o IncreaseStunMeter
+		o RegenerateStunMeter
+		o CheckStatusEffect
+		o SnapTurn
+	- Properties added
+		o Float m_manaMeterDelay
+		o Float m_maxStunMeter
+		o Float m_stunMeter
+		o Float m_stunMeterRegen
+		o Float m_stunMeterDelay
+		o Bool m_abilityHeldDown
+	- Private variables added
+		o Float m_delayManaregen
+		o Float m_delayStunMeterRegen
+
+PorfCharacterBase.cpp
+	- Tick
+		o Added Function call for RegenerateStunMeter
+	- RestoreMana
+		o Added a delay mana regen logic
+	- CastAbility
+		o Added Error checking to avoid ability overlap between abilities
+	- DrainMana
+		o Adjusted to account for mana drain
+	- IncreaseStunMeter
+		o Input float amount
+		o Return bool
+		o Logic to increase the stun meter by the amount inputted
+	- RegenerateStunMeter
+		o Input float deltaTime
+		o Regenerates stun meter over time
+	- Move
+		o Added error check to make sure character is able to move
+	- Push
+		o Added float speed to input
+		o Error check to make sure character can move
+	- SetPushSpeed
+		o Input float pushSpeed
+		o Sets character push speed
+	- GetPushSpeed
+		o Gets characters push speed
+	- SetMovementSpeed
+		o Input float movementSpeed
+		o Sets corresponding variable in the character’s movement component
+	- SetRotationVariables
+		o Input float rotSpeed and float lerpRatio
+		o Sets corresponding variables in the character’s movement component
+	- SnapTurn
+		o Input FVector direction
+		o Calls character’s movement component function Snap
+	- ReceiveDamage
+		o Logic for when player is invulnerable will receive no damage
+	- CheckStatusEffect
+		o Input StatusEffects effect
+		o Return bool
+		o Searches the status effects on a character and returns true if found
+	- RemoveFinishedStatusEffects
+		o Destroys the status effects actors
+
+PorfCharacterMovementComponent.h
+	- Function modifies
+		o Push
+	- Functions added
+		o SetPushSpeed
+		o GetPushSpeed
+		o SetMovementSpeed
+		o SetRotationSpeed
+		o Snap
+	- Properties
+		o Float m_maxMovementSpeed
+		o Float m_ranpingSpeed
+		o Float m_lerpRatio
+		o Float m_pushSpeedDropRatio
+	- Private Variables
+		o Loat m_currentPushSpeed
+		o Float m_pointToLowerSpeed
+		o Flaot m_quadraticA
+		o Bool m_calculatePush
+
+PorfCharacterMovementComponent.cpp
+	- TickComponent
+		o Added error checking so movement speed does not exceed the maximum
+		o Adjusted CalculateRotation to take in deltaTime as a parameter
+		o Adjusted CalculateForces to take in DeltaTime as a parameter
+	- CalculateRotation
+		o Input float DeltaTime
+		o Logic for the mechanic that handles the character rotation based on the current
+		speed of the character
+		o Used RInterpTo function for rotation interpolation
+	- Push
+		o Input FVector direction, float distance, float speed
+		o Logic for the push mechanic
+	- CalculateForces
+		o Input float DeltaTime
+		o The logic for the push mechanic to decrease speed from a certain point along the
+		push distance
+	- SetRotationSpeedAndLerpRatio
+		o Input float rotSpeed and float lerpRatio
+		o Set the corresponding variables
+
+Effect.cpp
+	- Added invulnerable to enum StatusEffects
